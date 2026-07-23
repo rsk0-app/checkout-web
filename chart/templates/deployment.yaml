@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-checkout-web
+  labels:
+    app: checkout-web
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: checkout-web
+  template:
+    metadata:
+      labels:
+        app: checkout-web
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.service.targetPort }}"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: checkout-web
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.env.NODE_ENV | quote }}
+            - name: FAILURE_MODE
+              value: {{ .Values.failure.mode | quote }}
+            - name: ERROR_RATE
+              value: {{ .Values.failure.errorRate | quote }}
+            - name: LATENCY_MS
+              value: {{ .Values.failure.latencyMs | quote }}
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
