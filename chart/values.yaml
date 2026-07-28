@@ -16,6 +16,6 @@ resources:
 env:
   NODE_ENV: production
 failure:
-  mode: ""
+  mode: crash
   errorRate: "0"
   latencyMs: "0"
