@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "next": "15.1.0",
-    "react": "19.0.2",
-    "react-dom": "19.0.2",
+    "react": "19.0.3",
+    "react-dom": "19.0.3",
     "uuid": "^11.0.0"
   },
   "devDependencies": {
