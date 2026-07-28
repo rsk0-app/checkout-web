@@ -7,8 +7,7 @@ service:
   port: 80
   targetPort: 3000
 resources:
-  limits:
-    memory: 256Mi
+  limits: {}
   requests:
     cpu: 50m
     memory: 128Mi
