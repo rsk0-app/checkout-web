@@ -16,6 +16,6 @@ env:
   NODE_ENV: production
   CHECKOUT_FEATURE_FLAGS: fast-path
 failure:
-  mode: crash
+  mode: ""
   errorRate: "0"
   latencyMs: "0"
