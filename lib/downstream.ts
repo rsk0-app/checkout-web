@@ -17,8 +17,13 @@ export function depTimeoutMs(): number {
   return Number.isFinite(ms) && ms > 0 ? ms : 800;
 }
 
-// Returns true when the downstream /healthz responds 2xx within the timeout, or
+// Returns true when the downstream /readyz responds 2xx within the timeout, or
 // when no downstream is configured. Never throws — all failures collapse to false.
+//
+// We check the downstream's DEEP /readyz (not shallow /healthz) so readiness
+// CHAINS: if payments is down, orders /readyz goes 503, which makes checkout
+// /readyz go 503 too — the cascade propagates ALL the way up the chain, not one
+// hop. The leaf (payments) serves /readyz shallowly (ready == process up).
 export async function checkDownstream(): Promise<boolean> {
   const base = downstreamUrl();
   if (base === "") return true; // no dependency configured — skip
@@ -26,7 +31,7 @@ export async function checkDownstream(): Promise<boolean> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), depTimeoutMs());
   try {
-    const res = await fetch(`${base}/healthz`, {
+    const res = await fetch(`${base}/readyz`, {
       signal: controller.signal,
       cache: "no-store",
     });
