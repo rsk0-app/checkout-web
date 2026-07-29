@@ -27,6 +27,6 @@ downstream:
   url: http://orders-service-orders-service.rsk0-apps.svc.cluster.local
   timeoutMs: 800
 failure:
-  mode: crash
+  mode: ""
   errorRate: "0"
   latencyMs: "0"
