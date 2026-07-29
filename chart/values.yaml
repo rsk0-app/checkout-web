@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: ghcr.io/rsk0-app/checkout-web
-  tag: fp-proof-1
+  tag: canary
   pullPolicy: Always
 service:
   port: 80
