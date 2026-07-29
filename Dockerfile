@@ -17,5 +17,8 @@ ENV PORT=3000
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 COPY --from=build /app/public ./public
+# Migrations must ship in the runtime image so runMigrations() can apply them
+# (the Next standalone trace only bundles JS, not the .sql files).
+COPY --from=build /app/migrations ./migrations
 EXPOSE 3000
 CMD ["node", "server.js"]
