@@ -1,7 +1,7 @@
-replicaCount: 1
+replicaCount: 2
 image:
   repository: ghcr.io/rsk0-app/checkout-web
-  tag: ffa2b670460ad25bf5610c3ae138bda513c00a9e
+  tag: canary
   pullPolicy: Always
 service:
   port: 80
@@ -16,6 +16,10 @@ resources:
 env:
   NODE_ENV: production
   CHECKOUT_FEATURE_FLAGS: fast-path
+  # R3: real load-driven memory footprint (MiB). Under loadgen the RSS plateaus
+  # at ~this value; the baseline limits.memory (256Mi) sits comfortably above
+  # footprint+runtime, so it is healthy at baseline but OOMKilled if a risky
+  # change lowers limits.memory below the footprint (set_low_memory_limit -> 128Mi).
   MEM_FOOTPRINT_MB: "150"
 database:
   url: postgres://stand:standpass@postgres.rsk0-apps.svc.cluster.local:5432/stand
