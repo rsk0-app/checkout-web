@@ -16,5 +16,5 @@ env:
   CHECKOUT_FEATURE_FLAGS: fast-path
 failure:
   mode: errors
-  errorRate: "0.45"
-  latencyMs: "1500"
+  errorRate: "0.08"
+  latencyMs: "800"
