@@ -4,6 +4,8 @@
 // across route handlers in the same server process). Do not import it from an
 // edge/middleware context.
 
+import { checkDownstream } from "./downstream";
+
 interface CounterEntry {
   route: string;
   code: string;
@@ -103,6 +105,14 @@ export async function injectAndRecord(
 
   if (cfg.mode === "latency") {
     await sleep(cfg.latencyMs);
+  }
+
+  // R1: real dependency blast-radius. Call the downstream on the request path;
+  // if it is unhealthy / slow / down, this request really fails (502) and the
+  // failure cascades up to whoever called us. No-op when DOWNSTREAM_URL is unset.
+  if (!(await checkDownstream())) {
+    record(route, 502, (Date.now() - start) / 1000);
+    return new Response("downstream dependency unavailable", { status: 502 });
   }
 
   const res = await work();
