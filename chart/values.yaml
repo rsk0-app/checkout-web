@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 2
 image:
   repository: ghcr.io/rsk0-app/checkout-web
   tag: canary
@@ -7,10 +7,12 @@ service:
   port: 80
   targetPort: 3000
 resources:
-  limits: {}
   requests:
     cpu: 50m
     memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
 env:
   NODE_ENV: production
   CHECKOUT_FEATURE_FLAGS: fast-path
@@ -20,6 +22,6 @@ downstream:
   url: http://orders-service-orders-service.rsk0-apps.svc.cluster.local
   timeoutMs: 800
 failure:
-  mode: crash
+  mode: ""
   errorRate: "0"
   latencyMs: "0"
