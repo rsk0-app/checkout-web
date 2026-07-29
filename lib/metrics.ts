@@ -5,6 +5,7 @@
 // edge/middleware context.
 
 import { checkDownstream } from "./downstream";
+import { recordFootprint } from "./footprint";
 
 interface CounterEntry {
   route: string;
@@ -97,6 +98,11 @@ export async function injectAndRecord(
 ): Promise<Response> {
   const cfg = failureConfig();
   const start = Date.now();
+
+  // R3: accumulate the real, bounded memory footprint on the business path only
+  // (injectAndRecord wraps just the /api/checkout handler; /healthz, /readyz and
+  // /metrics have their own routes). Under load RSS plateaus at ~MEM_FOOTPRINT_MB.
+  recordFootprint();
 
   if (cfg.mode === "errors" && Math.random() < cfg.errorRate) {
     record(route, 500, (Date.now() - start) / 1000);
