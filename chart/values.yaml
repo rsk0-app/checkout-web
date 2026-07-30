@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
   repository: ghcr.io/rsk0-app/checkout-web
-  tag: canary
+  tag: 0d50a0232ee7023df92570894764b481abc3598f
   pullPolicy: Always
 service:
   port: 80
