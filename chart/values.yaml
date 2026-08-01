@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 2
 image:
   repository: ghcr.io/rsk0-app/checkout-web
   tag: d2a000852f73a96a3d8f24d3b9a004ab8209edbd
@@ -12,7 +12,7 @@ resources:
     memory: 128Mi
   limits:
     cpu: 250m
-    memory: 256Mi
+    memory: 128Mi
 env:
   NODE_ENV: production
   CHECKOUT_FEATURE_FLAGS: fast-path
