@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
   repository: ghcr.io/rsk0-app/checkout-web
-  tag: b48cdc6150fe4498b035dd36bfb62ab44017bb50
+  tag: 31f26850d102cfad21a32aaf3dcdc65e6017469e
   pullPolicy: Always
 service:
   port: 80
