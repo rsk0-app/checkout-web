@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 1
 image:
   repository: ghcr.io/rsk0-app/checkout-web
   tag: 1f414b91ad66f2e1f7ed64e41f94b81d2f2072fa
