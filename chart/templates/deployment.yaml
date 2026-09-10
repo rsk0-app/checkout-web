@@ -46,5 +46,18 @@ spec:
           # the pod killed. Readiness is DEEP (/readyz): it deep-checks the DB
           # (R2 SELECT 1) AND the downstream /readyz (R1 chain) so an outage
           # flips the pod NotReady -> ArgoCD Degraded and the cascade propagates.
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
           resources:
 {{ toYaml .Values.resources | indent 12 }}
