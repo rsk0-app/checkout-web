@@ -16,8 +16,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Install
+        run: npm install --no-audit --no-fund
       - name: Test
-        run: node --test test/*.test.js
+        run: npm test
 
   image:
     # Build + push the container only for main (post-merge), never for PRs.

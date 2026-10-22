@@ -1,3 +1,5 @@
+import { withClientSpan } from "./otel-api";
+
 // R1 (realistic-stand): real dependency call for blast-radius.
 //
 // On every BUSINESS request this service calls its downstream's /healthz. If the
@@ -31,14 +33,25 @@ export async function checkDownstream(): Promise<boolean> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), depTimeoutMs());
   try {
-    const res = await fetch(`${base}/readyz`, {
-      signal: controller.signal,
-      cache: "no-store",
-    });
+    const res = await withClientSpan("GET", hostOf(base), "/readyz", (traceHeaders) =>
+      fetch(`${base}/readyz`, {
+        signal: controller.signal,
+        cache: "no-store",
+        headers: traceHeaders,
+      }),
+    );
     return res.ok; // 2xx only
   } catch {
     return false; // timeout / network / DNS / abort — all cascade as failure
   } finally {
     clearTimeout(timer);
+  }
+}
+
+function hostOf(base: string): string {
+  try {
+    return new URL(base).host;
+  } catch {
+    return "";
   }
 }
