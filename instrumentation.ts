@@ -4,6 +4,10 @@
 //  - arm the FAILURE_MODE=crash injector so the process self-exits (k8s crashloop).
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    // OpenTelemetry first, so migrations / startup are covered and the SDK is
+    // ready before any request. Never throws (see lib/otel-sdk.ts).
+    const { startTelemetry } = await import("./lib/otel-sdk");
+    startTelemetry();
     const { runMigrations } = await import("./lib/db");
     try {
       await runMigrations();

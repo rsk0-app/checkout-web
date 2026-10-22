@@ -6,6 +6,7 @@
 
 import { checkDownstream } from "./downstream";
 import { recordFootprint } from "./footprint";
+import { withServerSpan } from "./otel-api";
 
 interface CounterEntry {
   route: string;
@@ -92,7 +93,15 @@ function sleep(ms: number): Promise<void> {
 }
 
 // Wrap a unit of work with failure injection + metrics recording.
-export async function injectAndRecord(
+export function injectAndRecord(
+  route: string,
+  work: () => Response | Promise<Response>,
+  method = "GET",
+): Promise<Response> {
+  return withServerSpan(method, route, () => injectAndRecordInner(route, work));
+}
+
+async function injectAndRecordInner(
   route: string,
   work: () => Response | Promise<Response>,
 ): Promise<Response> {

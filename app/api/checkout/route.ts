@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // DB write+read against the checkouts table when a DB is configured. A DB error
 // surfaces as a real 500 (so a broken schema is a real failure). DATABASE_URL
 // empty => no-DB response (local fallback).
-function handle(): Promise<Response> {
+function handle(method: string): Promise<Response> {
   return injectAndRecord("/api/checkout", async () => {
     if (dbEnabled()) {
       try {
@@ -29,13 +29,13 @@ function handle(): Promise<Response> {
       status: 200,
       headers: { "content-type": "application/json" },
     });
-  });
+  }, method);
 }
 
 export function GET(): Promise<Response> {
-  return handle();
+  return handle("GET");
 }
 
 export function POST(): Promise<Response> {
-  return handle();
+  return handle("POST");
 }
